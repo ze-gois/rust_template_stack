@@ -6,20 +6,20 @@ use crate::info;
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct Stack {
+pub struct Stack<'a, 'b, 'c> {
     pub pointer: crate::Pointer,
-    // pub arguments: arguments::Vector<'a>,
-    // pub environment: environment::Vector<'b>,
+    pub arguments: arguments::Vector<'a>,
+    pub environment: environment::Vector<'b, 'c>,
     // pub auxiliary: auxiliary::Vector,
     // pub latter: crate::Pointer,
 }
 
-impl Stack {
+impl<'a, 'b, 'c> Stack<'a, 'b, 'c> {
     pub fn from_pointer(stack_pointer: crate::Pointer) -> Self {
-        // let arguments = arguments::Vector::from_pointer(stack_pointer);
+        let arguments = arguments::Vector::from_pointer(stack_pointer);
 
-        // let environment_pointer = unsafe { stack_pointer.0.add(2 + arguments.counter as usize) };
-        // let environment = environment::Vector::from_pointer(crate::Pointer(environment_pointer));
+        let environment_pointer = stack_pointer.add(2 + arguments.counter as usize);
+        let environment = environment::Vector::from_pointer(environment_pointer);
 
         // let auxiliary_pointer =
         //     unsafe { environment_pointer.add(2 + environment.counter as usize) };
@@ -34,6 +34,8 @@ impl Stack {
         // }
         Self {
             pointer: stack_pointer,
+            arguments,
+            environment,
         }
     }
 
@@ -43,8 +45,8 @@ impl Stack {
 
     pub fn print(&self) {
         info!("--- Stack Contents ---\n");
-        // self.arguments.print();
-        // self.environment.print();
+        self.arguments.print();
+        self.environment.print();
         // self.auxiliary.print();
         info!("---------------------\n");
     }

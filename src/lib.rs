@@ -14,6 +14,16 @@ impl Pointer {
         unsafe { core::arch::asm!("mov {}, rsp", out(reg) _pointer) };
         Pointer(_pointer)
     }
+
+    pub fn add(&self, a: usize) -> Self {
+        unsafe { Pointer(self.0.add(a)) }
+    }
+}
+
+impl Default for Pointer {
+    fn default() -> Self {
+        Pointer(core::ptr::null_mut())
+    }
 }
 
 pub struct Writer;
